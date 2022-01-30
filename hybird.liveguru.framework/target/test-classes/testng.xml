@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Liveguru">
+    <test name="F:/Automation/hybird.liveguru.framework">
+
+        <classes>
+            <class name="liveguru.users.User_01_Register"/>
+            <class name="liveguru.users.User_02_Login"/>
+
+
+        </classes>
+    </test>
+</suite>
