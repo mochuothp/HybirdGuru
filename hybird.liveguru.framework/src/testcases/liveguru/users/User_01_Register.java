@@ -1,5 +1,6 @@
 package liveguru.users;
 
+import commons.AbstractPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -7,9 +8,10 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class User_01_Register {
+public class User_01_Register extends AbstractPage {
     WebDriver driver;
 
     @BeforeClass
@@ -18,7 +20,7 @@ public class User_01_Register {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         driver.manage().window().maximize();
-
+        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
 
     @AfterClass
@@ -30,46 +32,46 @@ public class User_01_Register {
 
     @BeforeMethod
     public void beforeMethod() {
-        driver.get("https://demo.guru99.com/");
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+        openPageURL(driver,"http://live.techpanda.org/index.php");
+
+        //findElement(driver,"//div[@class='footer']//a[@title='My Account']");
+        clickToElement(driver, "//div[@class='footer']//a[@title='My Account']");
     }
 
     @Test
-    public void Register_Empty_Data()
+    public void TC_01_Register_Empty_Data()
     {
-        driver.findElement(By.xpath("//input[@name='btnLogin']")).click();
+        clickToElement(driver, "//button[@title='Register']");
 
-        String errorMessage = driver.findElement(By.xpath("//label[@id='message9']")).getText();
-        Assert.assertEquals(errorMessage,"Email ID must not be blank");
-
-        System.out.println(errorMessage);
-
-    }
-
-    @Test
-    public void Invalid_Email()
-    {
-        String email = "abc";
-        driver.findElement(By.xpath("//input[@name='emailid']")).sendKeys(email);
-
-        String errorMessage = driver.findElement(By.xpath("//label[@id='message9']")).getText();
-        Assert.assertEquals(errorMessage, "Email ID is not valid");
-        System.out.println(errorMessage);
-
+        String errorMessage = findElement(driver, "//div[@id='advice-required-entry-email_address']").getText();
+        Assert.assertEquals(errorMessage,"This is a required field.");
     }
 
 
     @Test
-    public void Valid_Data()
+    public void TC_02_Create_New_Account()
     {
-        String email = "long.ph145@gmail.com";
-        driver.findElement(By.xpath("//input[@name='emailid']")).sendKeys(email);
-        driver.findElement(By.xpath("//input[@name='btnLogin']")).click();
+        clickToElement(driver,"//a[@title='Create an Account']");
 
-        String successMessage = driver.findElement(By.xpath("//h2[(text()='Access details to demo site.')]")).getText();
+        String email = "long.ph145"+randomNum()+"@mailinator.com";
 
-        Assert.assertEquals(successMessage,"Access details to demo site.");
-        System.out.println(successMessage);
+        sendKeyToElement(driver,"//input[@id='firstname']","Long");
+        sendKeyToElement(driver,"//input[@id='lastname']","La");
+        sendKeyToElement(driver,"//input[@id='email_address']",email);
+        sendKeyToElement(driver, "//input[@id='password']","123456");
+        sendKeyToElement(driver, "//input[@id='confirmation']","123456");
 
+        clickToElement(driver, "//button[@title='Register']");
+
+        String successMessage = findElement(driver,"//span[(text()='Thank you for registering with Main Website Store.')]").getText();
+
+        Assert.assertEquals(successMessage,"Thank you for registering with Main Website Store.");
+
+    }
+
+    public int randomNum()
+    {
+        Random random = new Random();
+        return random.nextInt(10000);
     }
 }
