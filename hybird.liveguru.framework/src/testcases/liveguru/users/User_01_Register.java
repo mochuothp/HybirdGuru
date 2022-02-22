@@ -41,6 +41,7 @@ public class User_01_Register extends AbstractPage {
     @Test
     public void TC_01_Register_Empty_Data()
     {
+        clickToElement(driver, "//a[@title='Create an Account']");
         clickToElement(driver, "//button[@title='Register']");
 
         String errorMessage = findElement(driver, "//div[@id='advice-required-entry-email_address']").getText();
